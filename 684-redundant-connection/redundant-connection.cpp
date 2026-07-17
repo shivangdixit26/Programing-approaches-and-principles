@@ -1,27 +1,41 @@
 class Solution {
 public:
+vector<int>parent;
+vector<int>rnk;
     vector<int> findRedundantConnection(vector<vector<int>>& edges) {
-        int n = edges.size();
-        vector<vector<int>>graph(n+1);
+        int n =edges.size();
+        parent.resize(n+1);
+        rnk.resize(n+1,0);
+        for(int i =0;i<n;i++){
+            parent[i]=i;
+        }
         for(auto& edge:edges){
-            int u= edge[0];
-            int v=edge[1];
-            vector<bool>visited(n+1,false);
-            if(isConnected(graph,u,v,visited))return edge;
-            graph[u].push_back(v);
-            graph[v].push_back(u);
+            if(find (edge[0])==find(edge[1]))return edge;
+            unite(edge[0],edge[1]);
         }
         return {};
         
     }
-    bool isConnected(vector<vector<int>> &graph, int src, int dst, vector<bool> &visited){
-        if(src==dst)return true;
-        visited[src]=true;
-        for( int neighbor:graph[src]){
-            if (!visited[neighbor]){
-                if(isConnected(graph, neighbor,dst,visited))return true;
-            }
+    int find(int x){
+        if(parent[x]!=x){
+            parent[x]=find(parent[x]);
         }
-        return false;
+        return parent[x];
+    }
+    void unite(int x,int y ){
+        int rootx= find(x);
+        int rooty=find(y);
+        if(rootx==rooty)return ;
+        if(rnk[rootx]>rnk[rooty]){
+            parent[rooty]=rootx;
+        }
+        else if(rnk[rooty]>rnk[rootx]){
+            parent[rootx]=rooty;
+        }
+        else{
+            parent[rootx]=rooty;
+            rnk[rooty]++;
+        }
+
     }
 };
