@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        vector<int>sorted;
+        int n =nums.size();
+        for(int i =0;i<n;i++){
+            auto it=lower_bound(sorted.begin(),sorted.end(),nums[i]);
+            if(it==sorted.end()){
+                sorted.push_back(nums[i]);
+            }
+            else{
+                *it=nums[i];
+            }
+        }
+        return sorted.size();
+    
+        
+    }
+};
